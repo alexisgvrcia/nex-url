@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Github } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/providers/auth-modal-provider";
-import { Particles } from "@/components/ui/particles";
+import { Particles } from "@/components/landing/background/particles";
 
 const Button = ({
   children,
@@ -16,29 +16,27 @@ const Button = ({
   onClick?: () => void;
   variant?: "primary" | "outline";
 }) => {
-  if (variant === "outline") {
-    return (
-      <button
-        onClick={onClick}
-        className="inline-flex w-full h-14 cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 border-[2px] border-black/20 dark:border-white/20 px-10 text-sm font-medium whitespace-nowrap transition-all duration-300 outline-none hover:bg-gradient-to-tr hover:from-zinc-300/30 hover:via-gray-400/30 hover:to-transparent dark:hover:from-zinc-300/10 dark:hover:via-gray-400/20 text-black dark:text-white"
-      >
-        {children}
-      </button>
-    );
-  }
+  const baseClasses =
+    "inline-flex cursor-pointer items-center justify-center rounded-full px-8 h-12 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+
+  const variants = {
+    primary:
+      "bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 border border-transparent",
+    outline:
+      "border border-black text-black hover:bg-black/5 dark:border-white dark:text-white dark:hover:bg-white/10 bg-transparent",
+  };
 
   return (
-    <span className="relative inline-block overflow-hidden rounded-full p-[1.5px]">
-      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#000000_0%,#00000080_50%,#000000_100%)] dark:bg-[conic-gradient(from_90deg_at_50%_50%,#ffffff_0%,#ffffff80_50%,#ffffff_100%)]" />
-      <div className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white dark:bg-gray-950 text-xs font-medium backdrop-blur-3xl">
-        <button
-          onClick={onClick}
-          className="inline-flex h-14 rounded-full text-center group items-center w-full justify-center bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 text-black dark:text-white border-[2px] border-black/20 dark:border-white/20 hover:bg-gradient-to-tr hover:from-zinc-300/30 hover:via-gray-400/30 hover:to-transparent dark:hover:from-zinc-300/10 dark:hover:via-gray-400/20 transition-all px-10 gap-2 text-sm font-medium whitespace-nowrap cursor-pointer outline-none"
-        >
-          {children}
-        </button>
-      </div>
-    </span>
+    <motion.button
+      onClick={onClick}
+      className={`${baseClasses} ${variants[variant]}`}
+      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {children}
+    </motion.button>
   );
 };
 
@@ -57,14 +55,51 @@ export default function Hero({ session }: { session: boolean }) {
   return (
     <motion.section className="relative h-full grid place-content-center overflow-hidden px-4 py-24 text-gray-200">
       <div className="relative z-10 flex flex-col items-center w-full px-4">
-        <h1 className="bg-gradient-to-br from-black to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-center text-5xl md:text-7xl font-medium text-transparent selection:text-black selection:bg-white dark:selection:text-white dark:selection:bg-black">
-          Shorten <br />
-          your Links
-        </h1>
-        <p className="my-6 w-full max-w-sm sm:max-w-xl text-center text-sm sm:text-base md:text-lg leading-relaxed text-gray-800 dark:text-gray-200">
+        <motion.h1
+          className="text-center text-5xl md:text-7xl font-medium"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 },
+            },
+          }}
+        >
+          {["Shorten", "Your", "Links"].map((word, i) => (
+            <React.Fragment key={i}>
+              <motion.span
+                className="inline-block bg-linear-to-br from-black to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent pb-1"
+                variants={{
+                  hidden: { opacity: 0, y: 10, filter: "blur(10px)" },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    transition: {
+                      type: "spring",
+                      damping: 12,
+                      stiffness: 100,
+                    }
+                  },
+                }}
+              >
+                {word}
+              </motion.span>
+              {i === 0 ? <br /> : " "}
+            </React.Fragment>
+          ))}
+        </motion.h1>
+        <motion.p
+          className="my-6 w-full max-w-sm sm:max-w-xl text-center text-sm sm:text-base md:text-lg leading-relaxed text-gray-800 dark:text-gray-200"
+          initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
           Clean and efficient link shortening tool. Just drop a long URL and get
           a sleek short one.
-        </p>
+        </motion.p>
         <div className="flex flex-col sm:flex-row gap-y-4 sm:gap-y-0 sm:gap-x-4 w-full max-w-xs sm:max-w-none justify-center">
           <Button onClick={handleGetStarted} variant="primary">
             Get Started
@@ -84,7 +119,7 @@ export default function Hero({ session }: { session: boolean }) {
       </div>
 
       <div className="absolute inset-0 z-0">
-        <Particles className="h-full" quantity={300} />
+        <Particles className="h-full" />
       </div>
     </motion.section>
   );

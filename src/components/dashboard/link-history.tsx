@@ -17,7 +17,7 @@ import CopyButton from "@/components/ui/copy-button";
 import DeleteButton from "@/components/ui/delete-button";
 import Input from "@/components/ui/input";
 import AddLink from "./add-link";
-import LinkHistorySkeleton from "@/components/ui/link-history-skeleton";
+import LinkHistorySkeleton from "@/components/skeleton/link-history-skeleton";
 import { appConfig } from "@/config";
 
 export default function LinkHistory() {
