@@ -11,10 +11,12 @@ const Button = ({
   children,
   onClick,
   variant = "primary",
+  className = "",
 }: {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: "primary" | "outline";
+  className?: string;
 }) => {
   const baseClasses =
     "inline-flex cursor-pointer items-center justify-center rounded-full px-8 h-12 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
@@ -29,7 +31,7 @@ const Button = ({
   return (
     <motion.button
       onClick={onClick}
-      className={`${baseClasses} ${variants[variant]}`}
+      className={`${baseClasses} ${variants[variant]} ${className}`}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -101,7 +103,7 @@ export default function Hero({ session }: { session: boolean }) {
           a sleek short one.
         </motion.p>
         <div className="flex flex-col sm:flex-row gap-y-4 sm:gap-y-0 sm:gap-x-4 w-full max-w-xs sm:max-w-none justify-center">
-          <Button onClick={handleGetStarted} variant="primary">
+          <Button onClick={handleGetStarted} variant="primary" className="w-full">
             Get Started
           </Button>
 
@@ -109,8 +111,9 @@ export default function Hero({ session }: { session: boolean }) {
             href="https://github.com/gvrciary/nex-url"
             target="_blank"
             rel="noopener noreferrer"
+            className="w-full"
           >
-            <Button variant="outline">
+            <Button variant="outline" className="w-full">
               <Github className="h-4 w-4 mr-2" />
               View Repository
             </Button>
